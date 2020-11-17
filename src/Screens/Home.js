@@ -1,20 +1,36 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {SafeAreaView, StyleSheet, Image, View} from 'react-native';
 import {Button} from 'react-native-paper';
 const Home = () => {
+  const [image, setImage] = useState('');
+  const [random, setRandom] = useState(' ');
+  useEffect(() => {
+    fetch('http://89.234.183.248:3000/images')
+      .then((res) => res.json())
+      .then((data) => {
+        let num = Math.floor(Math.random() * data.images.length);
+        setRandom(data.images[num].fileName);
+        setImage(data);
+      });
+  }, []);
+  function getRandomImage() {
+    let num = Math.floor(Math.random() * image.images.length);
+    setRandom(image.images[num].fileName);
+  }
+  console.log('ss', random);
   return (
     <SafeAreaView style={styles.container}>
       <View>
         <Image
           style={styles.tinyLogo}
           source={{
-            uri: 'https://reactjs.org/logo-og.png',
+            uri: random,
           }}
         />
         <Button
           style={styles.btn}
           mode="contained"
-          onPress={() => console.log('Pressed')}>
+          onPress={() => getRandomImage()}>
           update image
         </Button>
       </View>
